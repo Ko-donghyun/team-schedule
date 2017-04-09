@@ -1,3 +1,8 @@
 node_modules/
 
 .idea/
+
+credentials.js
+
+*.log
+npm-debug.log*
