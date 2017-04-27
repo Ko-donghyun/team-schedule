@@ -7,37 +7,58 @@ const Schedule = sequelize.define('schedule', {
   monday: {
     type: Sequelize.STRING,
     allowNull: false,
-    defaultValue: '',
+    defaultValue: '{"monday": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}',
   },
   tuesday: {
     type: Sequelize.STRING,
     allowNull: false,
-    defaultValue: '',
+    defaultValue: '{"tuesday": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}',
   },
   wednesday: {
     type: Sequelize.STRING,
     allowNull: false,
-    defaultValue: '',
+    defaultValue: '{"wednesday": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}',
   },
   thursday: {
     type: Sequelize.STRING,
     allowNull: false,
-    defaultValue: '',
+    defaultValue: '{"thursday": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}',
   },
   friday: {
     type: Sequelize.STRING,
     allowNull: false,
-    defaultValue: '',
+    defaultValue: '{"friday": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}',
   },
   saturday: {
     type: Sequelize.STRING,
     allowNull: false,
-    defaultValue: '',
+    defaultValue: '{"saturday": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}',
   },
   sunday: {
     type: Sequelize.STRING,
     allowNull: false,
-    defaultValue: '',
+    defaultValue: '{"sunday": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ' +
+    '0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}',
   },
   user_id: {
     type: Sequelize.INTEGER,
