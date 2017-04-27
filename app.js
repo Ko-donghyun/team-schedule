@@ -9,6 +9,7 @@ const localStrategy = require('./config/env/local');
 
 const index = require('./routes/index');
 const user = require('./routes/user');
+const schedule = require('./routes/schedule');
 
 require('./model/relation');
 
@@ -37,6 +38,7 @@ localStrategy();
 
 app.use('/', index);
 app.use('/users', user);
+app.use('/schedule', schedule);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
