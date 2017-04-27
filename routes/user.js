@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 
-var User = require('./../model/user');
+const User = require('./../model/user');
+const Schedule = require('./../model/schedule');
 
 const helper = require('./helper/helper');
 const userValidation = require('./validation/validation');
@@ -37,12 +38,21 @@ router.post('/signup', (req, res, next) => {
       paranoid: false
     }).then((user) => {
       if (!user) {
-        return User.create(userObject);
+        return User.create(userObject).then((user) => {
+          return Schedule.create({
+            user_id: user.id,
+          }).then(() => {
+            return Promise.resolve(user);
+          });
+        });
+      } else {
+        throw helper.makePredictableError(200, '이미 존재하는 닉네임입니다.');
       }
-
-      throw helper.makePredictableError(200, '이미 존재하는 닉네임입니다.');
     });
   }).then((user) => {
+    console.log(user.get({
+      plain: true
+    }));
     console.log('유저 정보 저장 완료');
     console.log('로그인 시키기 시작');
 
