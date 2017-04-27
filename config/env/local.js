@@ -21,13 +21,11 @@ module.exports = function() {
       passwordField: 'password'
     }, function(username, password, done) {
       User.findOne({ where: { nickname: username }}).then((user) => {
-        console.log(user.nickname);
         if (!user) {
           return done(null, false, { message: 'Incorrect username.' });
         }
 
-        if (!user.validPassword(password, user.salt)) {
-          console.log('Bbbbd');
+        if (!user.validPassword(password)) {
           return done(null, false, { message: 'Incorrect password.' });
         }
 

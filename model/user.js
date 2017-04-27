@@ -21,7 +21,12 @@ const User = sequelize.define('user', {
 }, {
   instanceMethods: {
     // 비밀번호를 해시값으로 변경하는 메서드
-    validPassword: function (password, salt) {
+    validPassword: function (password) {
+      return this.encryptPassword(password, this.getDataValue('salt')) === this.getDataValue('encrypt_password');
+    },
+
+    // 비밀번호를 해시값으로 변경하는 메서드
+    encryptPassword: function(password, salt) {
       if (!password || !salt)
         return '';
       salt = new Buffer(salt, 'base64');

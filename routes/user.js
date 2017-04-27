@@ -84,12 +84,13 @@ router.post('/signin', (req, res, next) => {
     console.log('로그인 시작');
 
     return passport.authenticate('local', (err, user, info) => {
-      console.log(user);
       if (err) {
         return next(err);
       } else if (!user) {
         console.log('로그인 과정에서 유저 확인 불가');
-        return next(helper.makePredictableError(200, info));
+        console.log(info);
+
+        return next(helper.makePredictableError(200, info.message));
       }
 
       console.log('유저정보 가져오기 완료');
