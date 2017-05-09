@@ -4,14 +4,17 @@ const helper = require('./../helper/helper.js');
 /**
  * 회원가입 유효성 검사
  *
- * @param nickname
+ * @param email
  * @param password
  * @param passwordConfirm
  */
-exports.signUp = function(nickname, password, passwordConfirm) {
+exports.signUp = function(email, password, passwordConfirm) {
   return new Promise(function(resolve, reject) {
-    if (nickname === undefined || password === undefined || passwordConfirm === undefined || (password !== passwordConfirm)) {
+    if (email === undefined || password === undefined || passwordConfirm === undefined) {
       return reject(new helper.makePredictableError(200, '필요한 파라미터를 다 받지 못했습니다.'));
+    }
+    if (password !== passwordConfirm) {
+      return reject(new helper.makePredictableError(200, '비밀번호가 서로 일치하지 않습니다.'));
     }
 
     resolve();
@@ -22,12 +25,12 @@ exports.signUp = function(nickname, password, passwordConfirm) {
 /**
  * 로그인 유효성 검사
  *
- * @param nickname
+ * @param email
  * @param password
  */
-exports.signIn = function(nickname, password) {
+exports.signIn = function(email, password) {
   return new Promise(function(resolve, reject) {
-    if (nickname === undefined || password === undefined) {
+    if (email === undefined || password === undefined) {
       return reject(new helper.makePredictableError(200, '필요한 파라미터를 다 받지 못했습니다.'));
     }
 

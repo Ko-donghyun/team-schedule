@@ -13,31 +13,31 @@ const userValidation = require('./validation/validation');
 router.post('/signup', (req, res, next) => {
   console.log('회원가입 미들웨어 시작');
 
-  const nickname = req.body.nickname;
+  const email = req.body.email;
   const password = req.body.password;
   const passwordConfirm = req.body.password_confirm;
 
   console.log('유효성 검사 시작');
-  userValidation.signUp(nickname, password, passwordConfirm).then(() => {
+  userValidation.signUp(email, password, passwordConfirm).then(() => {
     console.log('유효성 검사 완료');
     console.log('유저 정보 저장 시작');
-
-    const salt = helper.makeSalt();
-
-    const userObject = {
-      nickname: req.body.nickname,
-      encrypt_password: helper.encryptPassword(req.body.password, salt),
-      salt,
-    };
 
     return User.findOne({
       attributes: ['id', 'deleted_at'],
       where: {
-        nickname: nickname
+        email,
       },
       paranoid: false
     }).then((user) => {
       if (!user) {
+        const salt = helper.makeSalt();
+        const userObject = {
+          email,
+          nickname: '익명의 ' + helper.getRandomNickName(),
+          encrypt_password: helper.encryptPassword(req.body.password, salt),
+          salt,
+        };
+
         return User.create(userObject).then((user) => {
           return Schedule.create({
             user_id: user.id,
@@ -46,7 +46,7 @@ router.post('/signup', (req, res, next) => {
           });
         });
       } else {
-        throw helper.makePredictableError(200, '이미 존재하는 닉네임입니다.');
+        throw helper.makePredictableError(200, '이미 존재하는 이메일입니다.');
       }
     });
   }).then((user) => {
@@ -85,11 +85,11 @@ router.post('/signup', (req, res, next) => {
 router.post('/signin', (req, res, next) => {
   console.log('로그인 미들웨어 시작');
 
-  const nickname = req.body.nickname;
+  const email = req.body.email;
   const password = req.body.password;
 
   console.log('유효성 검사 시작');
-  return userValidation.signIn(nickname, password).then(() => {
+  return userValidation.signIn(email, password).then(() => {
     console.log('유효성 검사 완료');
     console.log('로그인 시작');
 
@@ -118,7 +118,8 @@ router.post('/signin', (req, res, next) => {
           message: '로그인 완료되었습니다.',
           result: {
             id: user.id,
-            nickname: user.nickname
+            email: user.email,
+            nickname: user.nickname,
           },
         });
       });
