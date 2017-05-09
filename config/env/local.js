@@ -17,10 +17,10 @@ module.exports = function() {
 
   // Local strategy 사용
   passport.use(new LocalStrategy({
-      usernameField: 'nickname',
+      usernameField: 'email',
       passwordField: 'password'
     }, function(username, password, done) {
-      User.findOne({ where: { nickname: username }}).then((user) => {
+      User.findOne({ where: { email: username }}).then((user) => {
         if (!user) {
           return done(null, false, { message: 'Incorrect username.' });
         }
