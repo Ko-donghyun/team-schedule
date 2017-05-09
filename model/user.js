@@ -5,10 +5,20 @@ const crypto = require('crypto');
 const sequelize = require('./../config/env/sequelize.js');
 
 const User = sequelize.define('user', {
-  nickname: {
+  email: {
     type: Sequelize.STRING,
     allowNull: false,
     unique: true,
+  },
+  nickname: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    unique: false,
+  },
+  profile: {
+    type: Sequelize.STRING,
+    allowNull: true,
+    unique: false,
   },
   encrypt_password: {
     type: Sequelize.STRING,
