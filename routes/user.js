@@ -50,9 +50,6 @@ router.post('/signup', (req, res, next) => {
       }
     });
   }).then((user) => {
-    console.log(user.get({
-      plain: true
-    }));
     console.log('유저 정보 저장 완료');
     console.log('로그인 시키기 시작');
 
