@@ -77,3 +77,28 @@ exports.save = function(userId, monday, tuesday, wednesday, thursday, friday, sa
     resolve();
   });
 };
+
+
+/**
+ * 그룹 생성 유효성 검사
+ *
+ * @param userId
+ * @param member
+ * @param groupTitle
+ * @param groupType
+ */
+exports.groupCreate = function(userId, member, groupTitle, groupType) {
+  return new Promise(function(resolve, reject) {
+    if (userId === undefined || groupTitle === undefined || groupType === undefined || member === undefined) {
+      return reject(new helper.makePredictableError(200, '필요한 파라미터를 다 받지 못했습니다.'));
+    }
+
+    console.log(member);
+
+    if (!Array.isArray(member)) {
+      return reject(new helper.makePredictableError(200, '멤버 형식이 잘못되었습니다.'));
+    }
+
+    resolve();
+  });
+};
