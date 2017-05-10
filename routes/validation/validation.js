@@ -115,3 +115,22 @@ exports.getGroupList = function(userId) {
     resolve();
   });
 };
+
+
+/**
+ * 그룹 정보 수정 유효성 검사
+ *
+ * @param userId
+ * @param groupId
+ * @param groupTitle
+ * @param groupType
+ */
+exports.updateGroupInfo = function(userId, groupId, groupTitle, groupType) {
+  return new Promise(function(resolve, reject) {
+    if (userId === undefined || groupTitle === undefined || groupType === undefined || userId === undefined) {
+      return reject(new helper.makePredictableError(200, '필요한 파라미터를 다 받지 못했습니다.'));
+    }
+
+    resolve();
+  });
+};

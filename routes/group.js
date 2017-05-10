@@ -62,6 +62,62 @@ router.get('/', (req, res, next) => {
 });
 
 
+/* 그룹 정보 수정 */
+router.post('/', (req, res, next) => {
+  console.log('그룹 정보 수정 미들웨어 시작');
+
+  const userId = req.body.user_id;
+  const groupId = req.body.group_id;
+  const groupTitle = req.body.title;
+  const groupType = req.body.type;
+
+  console.log('유효성 검사 시작');
+  groupValidation.updateGroupInfo(userId, groupId, groupTitle, groupType).then(() => {
+    console.log('유효성 검사 완료');
+    console.log('유저 그룹 조회 시작');
+
+    return UserGroup.findOne({
+      attributes: ['id'],
+      where: {
+        user_id: userId,
+        group_id: groupId,
+      },
+    });
+  }).then((userGroup) => {
+    console.log('유저 그룹 조회 완료');
+    if (!userGroup) {
+      throw helper.makePredictableError(200, '존재하지 않거나 접근할 수 없는 그룹 정보 입니다.');
+    }
+
+    console.log('그룹 정보 업데이트 시작');
+    return UserGroup.update({
+      group_title: groupTitle,
+      group_type: groupType,
+    }, {
+      where: {
+        id: userGroup.id
+      }
+    }).spread((affectedCount, affectedRows) => {
+      return Promise.resolve(userGroup);
+    });
+  }).then((userGroup) => {
+    console.log('그룹 정보 업데이트 완료');
+    console.log('리스폰 보내기');
+
+    res.json({
+      success: 1,
+      message: '그룹 정보 업데이트 성공했습니다',
+    });
+  }).catch((err) => {
+    if (err.statusCode !== 200) {
+      console.log('그룹 정보 업데이트 중 에러: %s', err.stack);
+    }
+
+    next(err);
+  });
+});
+
+
 /* 그룹 생성 */
 router.post('/create', (req, res, next) => {
   console.log('그룹 생성 미들웨어 시작');
