@@ -93,10 +93,23 @@ exports.groupCreate = function(userId, member, groupTitle, groupType) {
       return reject(new helper.makePredictableError(200, '필요한 파라미터를 다 받지 못했습니다.'));
     }
 
-    console.log(member);
-
     if (!Array.isArray(member)) {
       return reject(new helper.makePredictableError(200, '멤버 형식이 잘못되었습니다.'));
+    }
+
+    resolve();
+  });
+};
+
+/**
+ * 그룹 조회 유효성 검사
+ *
+ * @param userId
+ */
+exports.getGroupList = function(userId) {
+  return new Promise(function(resolve, reject) {
+    if (userId === undefined) {
+      return reject(new helper.makePredictableError(200, '필요한 파라미터를 다 받지 못했습니다.'));
     }
 
     resolve();

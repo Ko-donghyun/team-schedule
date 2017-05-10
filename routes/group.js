@@ -10,6 +10,58 @@ const helper = require('./helper/helper');
 const groupValidation = require('./validation/validation');
 
 
+/* 그룹 조회 */
+router.get('/', (req, res, next) => {
+  console.log('그룹 조회 미들웨어 시작');
+
+  const userId = req.query.user_id;
+
+  console.log('유효성 검사 시작');
+  groupValidation.getGroupList(userId).then(() => {
+    console.log('유효성 검사 완료');
+    console.log('유저 조회 시작');
+
+    return User.findOne({
+      attributes: ['id'],
+      where: {
+        id: userId,
+      },
+    });
+  }).then((user) => {
+    console.log('유저 조회 완료');
+    if (!user) {
+      throw helper.makePredictableError(200, '존재하지 않는 유저입니다.');
+    }
+
+    console.log('그룹 조회 시작');
+    return UserGroup.findAll({
+      attributes: ['user_id', 'group_id', 'group_title', 'group_type'],
+      where: {
+        user_id: userId,
+        approval: true,
+      }
+    });
+  }).then((groups) => {
+    console.log('그룹 조회 완료');
+    console.log('리스폰 보내기');
+
+    res.json({
+      success: 1,
+      message: '그룹 조회 성공했습니다',
+      result: {
+        groups,
+      }
+    });
+  }).catch((err) => {
+    if (err.statusCode !== 200) {
+      console.log('그룹 조회 중 에러: %s', err.stack);
+    }
+
+    next(err);
+  });
+});
+
+
 /* 그룹 생성 */
 router.post('/create', (req, res, next) => {
   console.log('그룹 생성 미들웨어 시작');
@@ -20,8 +72,6 @@ router.post('/create', (req, res, next) => {
   const groupType = req.body.type;
 
   console.log('유효성 검사 시작');
-  console.log(member);
-  console.log(member.length);
   groupValidation.groupCreate(userId, member, groupTitle, groupType).then(() => {
     console.log('유효성 검사 완료');
     console.log('유저 조회 시작');
