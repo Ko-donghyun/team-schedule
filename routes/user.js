@@ -131,6 +131,46 @@ router.post('/signin', (req, res, next) => {
 });
 
 
+/* 유저 조회 */
+router.get('/find', (req, res, next) => {
+  console.log('유저 조회 미들웨어 시작');
+
+  const email = req.query.email;
+
+  console.log('유효성 검사 시작');
+  return userValidation.userCheck(email).then(() => {
+    console.log('유효성 검사 완료');
+    console.log('유저 조회 시작');
+
+    return User.findOne({
+      attributes: ['id', 'email', 'nickname'],
+      where: {
+        email,
+      },
+    });
+  }).then((user) => {
+    console.log('유저 조회 완료');
+    if (!user) {
+      throw helper.makePredictableError(200, '존재하지 않는 유저입니다.');
+    }
+
+    console.log('리스폰 보내기');
+    res.json({
+      success: 1,
+      message: '유저 조회 성공했습니다',
+      result: {
+        user,
+      }
+    });
+  }).catch((err) => {
+    if (err.statusCode !== 200) {
+      console.log('유저 조회 중 에러: %s', err.stack);
+    }
+
+    next(err);
+  });
+});
+
 
 
 module.exports = router;

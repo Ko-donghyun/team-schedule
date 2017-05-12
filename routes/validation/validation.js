@@ -40,6 +40,22 @@ exports.signIn = function(email, password) {
 
 
 /**
+ * 유저 체크 유효성 검사
+ *
+ * @param email
+ */
+exports.userCheck = function(email) {
+  return new Promise(function(resolve, reject) {
+    if (email === undefined) {
+      return reject(new helper.makePredictableError(200, '필요한 파라미터를 다 받지 못했습니다.'));
+    }
+
+    resolve();
+  });
+};
+
+
+/**
  * 스케줄 조회 유효성 검사
  *
  * @param userId
