@@ -377,4 +377,68 @@ router.post('/invite', (req, res, next) => {
 });
 
 
+/* 그룹 스케줄 불러오기 */
+router.get('/schedule', (req, res, next) => {
+  console.log('그룹 스케줄 조회 미들웨어 시작');
+
+  const groupId = req.query.group_id;
+
+  console.log('유효성 검사 시작');
+  groupValidation.getGroupSchedule(groupId).then(() => {
+    console.log('유효성 검사 완료');
+    console.log('그룹 조회 시작');
+
+    return Group.findOne({
+      attributes: ['id'],
+      where: {
+        id: groupId,
+      },
+    });
+  }).then((group) => {
+    console.log('그룹 조회 완료');
+    if (!group) {
+      throw helper.makePredictableError(200, '존재하지 않는 그룹입니다.');
+    }
+
+    console.log('그룹 스케줄 조회 시작');
+    return UserGroup.findAll({
+      include: [{
+        model: User,
+        attributes: ['id', 'email', 'nickname'],
+        required: false,
+        include: [{
+          model: Schedule,
+          attributes: ['id', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
+          where: {
+            '$userGroup.approval$': true,
+          },
+          required: false,
+        }]
+      }],
+      attributes: ['id', 'user_id', 'group_id', 'group_title', 'group_type', 'approval'],
+      where: {
+        group_id: groupId,
+      },
+    });
+  }).then((result) => {
+    console.log('그룹 스케줄 조회 완료');
+    console.log('리스폰 보내기');
+
+    res.json({
+      success: 1,
+      message: '그룹 스케줄 조회 성공했습니다',
+      result: {
+        result,
+      }
+    });
+  }).catch((err) => {
+    if (err.statusCode !== 200) {
+      console.log('그룹 스케줄 조회 중 에러: %s', err.stack);
+    }
+
+    next(err);
+  });
+});
+
+
 module.exports = router;

@@ -187,3 +187,20 @@ exports.inviteUser = function(invitedEmail, groupId, groupTitle, groupType) {
     resolve();
   });
 };
+
+
+/**
+ * 그룹 스케줄 조회 유효성 검사
+ *
+ * @param groupId
+ */
+exports.getGroupSchedule = function(groupId) {
+  return new Promise(function(resolve, reject) {
+    if (groupId === undefined) {
+      return reject(new helper.makePredictableError(200, '필요한 파라미터를 다 받지 못했습니다.'));
+    }
+
+    resolve();
+  });
+};
+
