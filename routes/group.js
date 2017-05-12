@@ -118,6 +118,58 @@ router.post('/', (req, res, next) => {
 });
 
 
+/* 그룹 초대 수락 */
+router.post('/join', (req, res, next) => {
+  console.log('그룹 초대 수락 미들웨어 시작');
+
+  const userId = req.body.user_id;
+  const groupId = req.body.group_id;
+
+  console.log('유효성 검사 시작');
+  groupValidation.joinGroup(userId, groupId).then(() => {
+    console.log('유효성 검사 완료');
+    console.log('유저 그룹 조회 시작');
+
+    return UserGroup.findOne({
+      attributes: ['id'],
+      where: {
+        user_id: userId,
+        group_id: groupId,
+      },
+    });
+  }).then((userGroup) => {
+    console.log('유저 그룹 조회 완료');
+    if (!userGroup) {
+      throw helper.makePredictableError(200, '존재하지 않거나 접근할 수 없는 그룹 정보 입니다.');
+    }
+
+    console.log('초대 수락 시작');
+    return UserGroup.update({
+      approval: true,
+    }, {
+      where: {
+        id: userGroup.id
+      }
+    }).spread((affectedCount, affectedRows) => {
+      return Promise.resolve(userGroup);
+    });
+  }).then((userGroup) => {
+    console.log('초대 수락 완료');
+    console.log('리스폰 보내기');
+
+    res.json({
+      success: 1,
+      message: '초대 수락 성공했습니다',
+    });
+  }).catch((err) => {
+    if (err.statusCode !== 200) {
+      console.log('초대 수락 중 에러: %s', err.stack);
+    }
+
+    next(err);
+  });
+});
+
 /* 그룹 생성 */
 router.post('/create', (req, res, next) => {
   console.log('그룹 생성 미들웨어 시작');
