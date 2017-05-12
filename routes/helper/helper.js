@@ -8,7 +8,7 @@ const crypto = require('crypto');
  * @param message
  */
 exports.makePredictableError = function(statusCode, message) {
-  var err = new Error(message);
+  const err = new Error(message);
   err.statusCode = statusCode;
   return err;
 };
