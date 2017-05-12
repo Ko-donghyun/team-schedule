@@ -10,18 +10,27 @@ User.hasOne(Schedule, {
   },
   constraints: false
 });
+User.hasMany(Group, {
+  foreignKey: {
+    allowNull: false
+  },
+  constraints: false
+});
+Group.belongsTo(User);
 User.hasMany(UserGroup, {
   foreignKey: {
     allowNull: false
   },
   constraints: false
 });
+UserGroup.belongsTo(User);
 Group.hasMany(UserGroup, {
   foreignKey: {
     allowNull: false
   },
   constraints: false
 });
+UserGroup.belongsTo(Group);
 
 User.sync().then(function () {});
 
