@@ -272,7 +272,15 @@ router.get('/invite', (req, res, next) => {
       where: {
         user_id: userId,
         approval: false,
-      }
+      },
+      include: [{
+        model: Group,
+        attributes: ['id', 'member_count', 'user_id'],
+        include: [{
+          model: User,
+          attributes: ['email', 'nickname'],
+        }],
+      }],
     });
   }).then((groups) => {
     console.log('초대된 그룹 조회 완료');
