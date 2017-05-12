@@ -242,4 +242,56 @@ router.post('/create', (req, res, next) => {
   });
 });
 
+
+/* 초대된 그룹 조회 */
+router.get('/invite', (req, res, next) => {
+  console.log('초대된 그룹 조회 미들웨어 시작');
+
+  const userId = req.query.user_id;
+
+  console.log('유효성 검사 시작');
+  groupValidation.getGroupList(userId).then(() => {
+    console.log('유효성 검사 완료');
+    console.log('유저 조회 시작');
+
+    return User.findOne({
+      attributes: ['id'],
+      where: {
+        id: userId,
+      },
+    });
+  }).then((user) => {
+    console.log('유저 조회 완료');
+    if (!user) {
+      throw helper.makePredictableError(200, '존재하지 않는 유저입니다.');
+    }
+
+    console.log('초대된 그룹 조회 시작');
+    return UserGroup.findAll({
+      attributes: ['user_id', 'group_id', 'group_title', 'group_type'],
+      where: {
+        user_id: userId,
+        approval: false,
+      }
+    });
+  }).then((groups) => {
+    console.log('초대된 그룹 조회 완료');
+    console.log('리스폰 보내기');
+
+    res.json({
+      success: 1,
+      message: '초대된 그룹 조회 성공했습니다',
+      result: {
+        groups,
+      }
+    });
+  }).catch((err) => {
+    if (err.statusCode !== 200) {
+      console.log('초대된 그룹 조회 중 에러: %s', err.stack);
+    }
+
+    next(err);
+  });
+});
+
 module.exports = router;
