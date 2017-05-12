@@ -113,7 +113,8 @@ exports.groupCreate = function(userId, member, groupTitle, groupType) {
       return reject(new helper.makePredictableError(200, '멤버 형식이 잘못되었습니다.'));
     }
 
-    resolve();
+    const compactMember = Array.from(new Set(member));
+    resolve(compactMember.filter(item => item != userId));
   });
 };
 

@@ -175,12 +175,13 @@ router.post('/create', (req, res, next) => {
   console.log('그룹 생성 미들웨어 시작');
 
   const userId = req.body.user_id;
-  const member = req.body.member;
+  let member = req.body.member;
   const groupTitle = req.body.title;
   const groupType = req.body.type;
 
   console.log('유효성 검사 시작');
-  groupValidation.groupCreate(userId, member, groupTitle, groupType).then(() => {
+  groupValidation.groupCreate(userId, member, groupTitle, groupType).then((compactMember) => {
+    member = compactMember;
     console.log('유효성 검사 완료');
     console.log('유저 조회 시작');
 
