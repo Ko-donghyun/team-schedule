@@ -303,4 +303,78 @@ router.get('/invite', (req, res, next) => {
   });
 });
 
+
+/* 그룹 초대 하기 */
+router.post('/invite', (req, res, next) => {
+  console.log('그룹 초대 미들웨어 시작');
+
+  const invitedEmail = req.body.email;
+  const groupId = req.body.group_id;
+  const groupTitle = req.body.title;
+  const groupType = req.body.type;
+
+  console.log('유효성 검사 시작');
+  groupValidation.inviteUser(invitedEmail, groupId, groupTitle, groupType).then(() => {
+    console.log('유효성 검사 완료');
+    console.log('그룹 조회 시작');
+
+    return Group.findOne({
+      attributes: ['id'],
+      where: {
+        id: groupId,
+      },
+    });
+  }).then((group) => {
+    console.log('그룹 조회 완료');
+    if (!group) {
+      throw helper.makePredictableError(200, '존재하지 않는 그룹입니다.');
+    }
+
+    console.log('초대할 유저 조회 시작');
+    return User.findOne({
+      attributes: ['id'],
+      where: {
+        email: invitedEmail,
+      },
+    });
+  }).then((user) => {
+    console.log('초대할 유저 조회 완료');
+    if (!user) {
+      throw helper.makePredictableError(200, '존재하지 않는 유저입니다.');
+    }
+
+    console.log('그룹 초대 시작');
+    const userGroupObject = {
+      user_id: user.id,
+      group_id: groupId,
+      group_title: groupTitle,
+      group_type: groupType,
+    };
+
+    return UserGroup.create(userGroupObject);
+  }).then((userGroup) => {
+    console.log('그룹 초대 완료');
+    console.log('리스폰 보내기');
+
+    res.json({
+      success: 1,
+      message: '그룹 초대 성공했습니다',
+    });
+  }).catch((err) => {
+    if (err.statusCode !== 200) {
+      if (err.errors && err.errors[0].type == "unique violation") {
+        const newErr = new Error('이미 그룹에 초대되어 있습니다.');
+        newErr.statusCode = 200;
+
+        return next(newErr);
+      }
+
+      console.log('그룹 초대 중 에러: %s', err.stack);
+    }
+
+    next(err);
+  });
+});
+
+
 module.exports = router;
