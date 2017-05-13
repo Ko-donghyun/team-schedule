@@ -131,6 +131,17 @@ router.post('/signin', (req, res, next) => {
 });
 
 
+/* 로그아웃 */
+router.get('/signout', (req, res, next) => {
+  console.log('로그아웃 미들웨어 시작');
+  req.logout();
+  res.json({
+    success: 1,
+    message: '로그아웃 완료되었습니다.',
+  });
+});
+
+
 /* 유저 조회 */
 router.get('/find', (req, res, next) => {
   console.log('유저 조회 미들웨어 시작');
