@@ -184,4 +184,61 @@ router.get('/find', (req, res, next) => {
 
 
 
+/* 유저 조회 */
+router.post('/rename', (req, res, next) => {
+  console.log('유저 이름 수정 미들웨어 시작');
+
+  const userId = req.body.user_id;
+  const newNickname = req.body.new_nickname;
+  const password = req.body.password;
+
+  console.log('유효성 검사 시작');
+  return userValidation.userRename(newNickname, password, userId).then(() => {
+    console.log('유효성 검사 완료');
+    console.log('유저 조회 시작');
+
+    return User.findOne({
+      attributes: ['id', 'email', 'nickname', 'encrypt_password', 'salt'],
+      where: {
+        id: userId,
+      },
+    });
+  }).then((user) => {
+    console.log('유저 조회 완료');
+    if (!user) {
+      throw helper.makePredictableError(200, '존재하지 않는 유저입니다.');
+    }
+
+    if (!helper.checkPassword(password, user.salt, user.encrypt_password)) {
+      throw helper.makePredictableError(200, '비밀번호가 일치하지 않습니다.');
+    }
+
+    console.log('유저 닉네임 변경 시작');
+    user.nickname = newNickname;
+    return user.save();
+  }).then((user) => {
+    console.log('유저 닉네임 변경 완료');
+    console.log('리스폰 보내기');
+
+    res.json({
+      success: 1,
+      message: '유저 닉네임 변경 성공했습니다',
+      result: {
+        user: {
+          id: user.id,
+          nickname: user.nickname,
+          email: user.email,
+        },
+      },
+    });
+  }).catch((err) => {
+    if (err.statusCode !== 200) {
+      console.log('유저 닉네임 변경 중 에러: %s', err.stack);
+    }
+
+    next(err);
+  });
+});
+
+
 module.exports = router;

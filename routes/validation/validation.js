@@ -56,6 +56,24 @@ exports.userCheck = function(email) {
 
 
 /**
+ * 유저 닉네임 재 설정 검사
+ *
+ * @param newNickname
+ * @param password
+ * @param userId
+ */
+exports.userRename = function(newNickname, password, userId) {
+  return new Promise(function(resolve, reject) {
+    if (newNickname === undefined || password === undefined || userId === undefined) {
+      return reject(new helper.makePredictableError(200, '필요한 파라미터를 다 받지 못했습니다.'));
+    }
+
+    resolve();
+  });
+};
+
+
+/**
  * 스케줄 조회 유효성 검사
  *
  * @param userId

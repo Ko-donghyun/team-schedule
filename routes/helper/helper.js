@@ -32,3 +32,8 @@ exports.encryptPassword = function(password, salt) {
   return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
 };
 
+exports.checkPassword = function(password, salt, encrypt_password) {
+  salt = new Buffer(salt, 'base64');
+  return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64') === encrypt_password;
+};
+
