@@ -88,6 +88,21 @@ exports.getSchedule = function(userId) {
   });
 };
 
+/**
+ * 유저 정보 조회 유효성 검사
+ *
+ * @param userId
+ */
+exports.getUserInfo = function(userId) {
+  return new Promise(function(resolve, reject) {
+    if (userId === undefined) {
+      return reject(new helper.makePredictableError(200, '필요한 파라미터를 다 받지 못했습니다.'));
+    }
+
+    resolve();
+  });
+};
+
 
 /**
  * 스케줄 조회 유효성 검사

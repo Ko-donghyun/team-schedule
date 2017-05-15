@@ -183,6 +183,47 @@ router.get('/find', (req, res, next) => {
 });
 
 
+/* 유저 정보 받기 */
+router.get('/info', (req, res, next) => {
+  console.log('유저 정보 조회 미들웨어 시작');
+
+  const userId = req.query.user_id;
+
+  console.log('유효성 검사 시작');
+  return userValidation.getUserInfo(userId).then(() => {
+    console.log('유효성 검사 완료');
+    console.log('유저 정보 조회 시작');
+
+    return User.findOne({
+      attributes: ['id', 'email', 'nickname'],
+      where: {
+        id: userId,
+      },
+    });
+  }).then((user) => {
+    console.log('유저 정보 조회 완료');
+    if (!user) {
+      throw helper.makePredictableError(200, '존재하지 않는 유저입니다.');
+    }
+
+    console.log('리스폰 보내기');
+    res.json({
+      success: 1,
+      message: '유저 정보 조회 성공했습니다',
+      result: {
+        user,
+      }
+    });
+  }).catch((err) => {
+    if (err.statusCode !== 200) {
+      console.log('유저 정보 조회 중 에러: %s', err.stack);
+    }
+
+    next(err);
+  });
+});
+
+
 
 /* 유저 조회 */
 router.post('/rename', (req, res, next) => {
