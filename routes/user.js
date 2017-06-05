@@ -231,7 +231,8 @@ router.post('/rename', (req, res, next) => {
 
   const userId = req.body.user_id;
   const newNickname = req.body.new_nickname;
-  const password = req.body.password;
+  // const password = req.body.password;
+  const password = 'empty';
 
   console.log('유효성 검사 시작');
   return userValidation.userRename(newNickname, password, userId).then(() => {
@@ -250,9 +251,9 @@ router.post('/rename', (req, res, next) => {
       throw helper.makePredictableError(200, '존재하지 않는 유저입니다.');
     }
 
-    if (!helper.checkPassword(password, user.salt, user.encrypt_password)) {
-      throw helper.makePredictableError(200, '비밀번호가 일치하지 않습니다.');
-    }
+    // if (!helper.checkPassword(password, user.salt, user.encrypt_password)) {
+    //   throw helper.makePredictableError(200, '비밀번호가 일치하지 않습니다.');
+    // }
 
     console.log('유저 닉네임 변경 시작');
     user.nickname = newNickname;
