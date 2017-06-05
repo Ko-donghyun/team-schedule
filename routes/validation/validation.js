@@ -204,6 +204,20 @@ exports.joinGroup = function(userId, groupId) {
 
 
 /**
+ * 그룹 초대 거절 유효성 검사
+ *
+ * @param userId
+ * @param groupId
+ */
+exports.refuseGroup = function(userId, groupId) {
+  return new Promise(function(resolve, reject) {
+    if (userId === undefined || groupId === undefined) {
+      return reject(new helper.makePredictableError(200, '필요한 파라미터를 다 받지 못했습니다.'));
+    }
+
+    resolve();
+  });
+};
  * 그룹 초대 유효성 검사
  *
  * @param invitedEmail
