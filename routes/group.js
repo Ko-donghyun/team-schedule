@@ -184,7 +184,7 @@ router.post('/refuse', (req, res, next) => {
     console.log('유저 그룹 조회 시작');
 
     return UserGroup.findOne({
-      attributes: ['id'],
+      attributes: ['id', 'approval'],
       where: {
         user_id: userId,
         group_id: groupId,
@@ -234,7 +234,7 @@ router.post('/exit', (req, res, next) => {
     console.log('유저 그룹 조회 시작');
 
     return UserGroup.findOne({
-      attributes: ['id'],
+      attributes: ['id', 'approval'],
       where: {
         user_id: userId,
         group_id: groupId,
