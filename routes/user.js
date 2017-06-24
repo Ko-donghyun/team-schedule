@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+const multiparty = require('multiparty');
+const multipart = require('connect-multiparty');
+
+const multipartMiddleware = multipart({autoFiles: true, uploadDir: __dirname + '/../public/images'});
 
 const User = require('./../model/user');
 const Schedule = require('./../model/schedule');
@@ -154,7 +158,7 @@ router.get('/find', (req, res, next) => {
     console.log('유저 조회 시작');
 
     return User.findOne({
-      attributes: ['id', 'email', 'nickname'],
+      attributes: ['id', 'email', 'profile', 'nickname'],
       where: {
         email,
       },
@@ -195,7 +199,7 @@ router.get('/info', (req, res, next) => {
     console.log('유저 정보 조회 시작');
 
     return User.findOne({
-      attributes: ['id', 'email', 'nickname'],
+      attributes: ['id', 'email', 'profile', 'nickname'],
       where: {
         id: userId,
       },
@@ -225,7 +229,7 @@ router.get('/info', (req, res, next) => {
 
 
 
-/* 유저 조회 */
+/* 유저 이름 수정 */
 router.post('/rename', (req, res, next) => {
   console.log('유저 이름 수정 미들웨어 시작');
 
@@ -240,7 +244,7 @@ router.post('/rename', (req, res, next) => {
     console.log('유저 조회 시작');
 
     return User.findOne({
-      attributes: ['id', 'email', 'nickname', 'encrypt_password', 'salt'],
+      attributes: ['id', 'email', 'profile', 'nickname', 'encrypt_password', 'salt'],
       where: {
         id: userId,
       },
@@ -281,6 +285,63 @@ router.post('/rename', (req, res, next) => {
     next(err);
   });
 });
+
+/* 유저 프로필 사진 저장 */
+router.post('/profile', multipartMiddleware, (req, res, next) => {
+  console.log('유저 프로필 저장 미들웨어 시작');
+
+  const userId = req.body.user_id;
+  const profileImage = req.files.profile_image;
+
+  console.log('유효성 검사 시작');
+  return userValidation.userProfile(profileImage, userId).then(() => {
+    console.log('유효성 검사 완료');
+    console.log('유저 조회 시작');
+
+    return User.findOne({
+      attributes: ['id', 'email', 'profile', 'nickname', 'encrypt_password', 'salt'],
+      where: {
+        id: userId,
+      },
+    });
+  }).then((user) => {
+    console.log('유저 조회 완료');
+    if (!user) {
+      throw helper.makePredictableError(200, '존재하지 않는 유저입니다.');
+    }
+
+    console.log('유저 프로필 이미지 받기 시작');
+    return helper.saveProfileImage(user, profileImage);
+  }).then((user) => {
+    console.log('유저 프로필 이미지 저장 완료');
+    console.log('디비 반영 시작');
+
+    return user.save();
+  }).then((user) => {
+    console.log('유저 프로필 이미지 저장 완료');
+    console.log('리스폰 보내기');
+
+    res.json({
+      success: 1,
+      message: '유저 프로필 저장 성공했습니다',
+      result: {
+        user: {
+          id: user.id,
+          nickname: user.nickname,
+          profile: user.profile,
+          email: user.email,
+        },
+      },
+    });
+  }).catch((err) => {
+    if (err.statusCode !== 200) {
+      console.log('유저 프로필 저장 중 에러: %s', err.stack);
+    }
+
+    next(err);
+  });
+});
+
 
 
 module.exports = router;
