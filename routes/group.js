@@ -201,7 +201,7 @@ router.post('/refuse', (req, res, next) => {
     }
 
     console.log('초대 거절 시작');
-    return userGroup.destroy();
+    return userGroup.destroy({ force: true });
   }).then(() => {
     console.log('초대 거절 완료');
     console.log('리스폰 보내기');
@@ -251,7 +251,7 @@ router.post('/exit', (req, res, next) => {
     }
 
     console.log('그룹 나가기 시작');
-    return userGroup.destroy();
+    return userGroup.destroy({ force: true });
   }).then(() => {
     console.log('그룹 나가기 완료');
     console.log('리스폰 보내기');
