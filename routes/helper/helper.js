@@ -68,8 +68,7 @@ exports.saveProfileImage = function(user, profileImage) {
           return reject(new _this.makePredictableError(200, 'S3 파일 저장 실패했습니다.'));
         } else {
           console.log('S3 저장 완료');
-
-          user.profile = data.Location;
+          user.profile = 'https://s3.ap-northeast-2.amazonaws.com/teamschedule/' + data.key;
 
           fs.access(filePath, fs.F_OK, function(err) {
             if (err) {
