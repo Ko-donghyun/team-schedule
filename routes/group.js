@@ -505,7 +505,7 @@ router.get('/schedule', (req, res, next) => {
     return UserGroup.findAll({
       include: [{
         model: User,
-        attributes: ['id', 'email', 'nickname'],
+        attributes: ['id', 'email', 'profile', 'nickname'],
         required: false,
         include: [{
           model: Schedule,
