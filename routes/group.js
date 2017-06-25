@@ -380,7 +380,7 @@ router.get('/invite', (req, res, next) => {
         attributes: ['id', 'member_count', 'user_id'],
         include: [{
           model: User,
-          attributes: ['email', 'nickname'],
+          attributes: ['email', 'profile', 'nickname'],
         }],
       }],
     });
